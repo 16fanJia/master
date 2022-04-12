@@ -1,0 +1,17 @@
+# MySQL数据库连接信息
+database:
+  username: "root"
+  password: "818818fj"
+  host: "127.0.0.1"
+  port: "3306"
+  dbname: "video"
+
+# token --jwt_key
+token:
+    jwt_key: "stream_video"
+
+# redis connection
+redis:
+  addr: "127.0.0.1:6379"
+  password: ""
+  db: 0
