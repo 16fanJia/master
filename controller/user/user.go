@@ -11,6 +11,7 @@ import (
 	"stream-video/dto"
 	"stream-video/model"
 	"stream-video/response"
+	"stream-video/util"
 )
 
 // RegisterUser 用户注册逻辑函数
@@ -27,7 +28,8 @@ func RegisterUser(c *gin.Context) {
 	result := dbops.DB.Table("user").Where("email = ?", params.Email).First(&user)
 
 	if result.Error != nil {
-		if !errors.Is(result.Error, gorm.ErrRecordNotFound) { //如果数据库错误不是 记录不存在 则返回错误
+		if !errors.Is(result.Error, gorm.ErrRecordNotFound) { //如果数据库错误不是 <记录不存在> 则返回错误
+			util.Log.Error("数据库数据查询错误" + result.Error.Error())
 			response.New(code.DatabaseQueryError).WithError(result.Error).Return(c)
 			return
 		}
@@ -40,6 +42,7 @@ func RegisterUser(c *gin.Context) {
 	errName := dbops.DB.Table("user").Where("name = ?", params.Name).First(&user).Error
 	if errName != nil {
 		if !errors.Is(result.Error, gorm.ErrRecordNotFound) { //如果数据库错误不是 记录不存在 则返回错误
+			util.Log.Error("数据库数据查询错误" + result.Error.Error())
 			response.New(code.DatabaseQueryError).WithError(result.Error).Return(c)
 			return
 		}
@@ -94,6 +97,7 @@ func LoginUser(c *gin.Context) {
 	//发放token
 	token, err := common.ReleaseToken(user)
 	if err != nil {
+		util.Log.Error("发放token失败：" + err.Error())
 		response.New(code.ReleaseTokenError).WithError(err).Return(c)
 		return
 	}
@@ -111,6 +115,7 @@ func LoginUser(c *gin.Context) {
 	//将用户信息 存入缓存
 	userInfo := common.NewUserInfo(user.ID)
 	if err := userInfo.AddUserInfoToRedis(user); err != nil {
+		util.Log.Error("缓存用户信息失败：" + err.Error())
 		response.New(code.AddCacheToRidesError).WithError(err).Return(c)
 		return
 	}

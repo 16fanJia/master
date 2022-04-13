@@ -5,6 +5,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"github.com/spf13/viper"
+	"stream-video/util"
 )
 
 var DB *gorm.DB
@@ -28,6 +29,6 @@ func InitDB() {
 	var err error
 	DB, err = gorm.Open("mysql", dsn)
 	if err != nil {
-		panic("failed to connect database err:" + err.Error())
+		util.Log.Panic("failed to connect database err:" + err.Error())
 	}
 }

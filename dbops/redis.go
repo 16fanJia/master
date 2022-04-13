@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
+	"stream-video/util"
 )
 
 var RDB *redis.Client
@@ -21,8 +22,7 @@ func InitRedis() {
 	//ping redis 是否联通
 	_, err := RDB.Ping(ctx).Result()
 	if err != nil {
-		panic("redis connection failed err:" + err.Error())
-		return
+		util.Log.Panic("redis connection failed err:" + err.Error())
 	}
 
 }
