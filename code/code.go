@@ -18,6 +18,9 @@ const (
 	AddTokenToRedisError       Code = 4010
 	UpdateTokenExpirationError Code = 4011
 	AddCacheToRidesError       Code = 4012
+	UserNotLoggedIn            Code = 4013
+	TokenFailure               Code = 4014
+	GetUserInfoFromRedisError  Code = 4015
 )
 
 var codeMsg = map[Code]string{
@@ -35,6 +38,9 @@ var codeMsg = map[Code]string{
 	AddTokenToRedisError:       "缓存token异常",
 	UpdateTokenExpirationError: "更新token过期时间异常",
 	AddCacheToRidesError:       "缓存用户信息异常",
+	UserNotLoggedIn:            "用户未登陆",
+	TokenFailure:               "token失效",
+	GetUserInfoFromRedisError:  "获取用户信息失败",
 }
 
 func (c Code) GetMessage() string {

@@ -102,15 +102,15 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 	//判断redis中 是否含有用户token
-	ok := common.GetRedisToken(user.ID)
-	if !ok { //未获取到token
-		//将token 放入缓存
-		err := common.AddRedisToken(token, user.ID)
-		if err != nil {
-			response.New(code.AddTokenToRedisError).WithError(err).Return(c)
-			return
-		}
-	}
+	//ok := common.GetTokenKey(user.ID).RedisExistToken()
+	//if !ok { //未获取到token
+	//	//将token 放入缓存
+	//	err := common.GetTokenKey(user.ID).AddRedisToken(token)
+	//	if err != nil {
+	//		response.New(code.AddTokenToRedisError).WithError(err).Return(c)
+	//		return
+	//	}
+	//}
 
 	//将用户信息 存入缓存
 	userInfo := common.NewUserInfo(user.ID)
