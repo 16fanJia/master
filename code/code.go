@@ -21,6 +21,11 @@ const (
 	UserNotLoggedIn            Code = 4013
 	TokenFailure               Code = 4014
 	GetUserInfoFromRedisError  Code = 4015
+	GetFileError               Code = 4016
+	FileFormatError            Code = 4017
+	FileUploadError            Code = 4018
+	DataCreateError            Code = 4019
+	DataDoesNotExist           Code = 4020
 )
 
 var codeMsg = map[Code]string{
@@ -41,6 +46,11 @@ var codeMsg = map[Code]string{
 	UserNotLoggedIn:            "用户未登陆",
 	TokenFailure:               "token失效",
 	GetUserInfoFromRedisError:  "获取用户信息失败",
+	GetFileError:               "获取文件失败",
+	FileFormatError:            "文件格式错误",
+	FileUploadError:            "文件上传失败",
+	DataCreateError:            "数据创建入库失败",
+	DataDoesNotExist:           "数据不存在",
 }
 
 func (c Code) GetMessage() string {

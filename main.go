@@ -5,6 +5,7 @@ import (
 	"stream-video/api"
 	"stream-video/config"
 	"stream-video/dbops"
+	"stream-video/oss"
 	"stream-video/util"
 )
 
@@ -14,6 +15,7 @@ func main() {
 	config.InitConfig() //初始还配置文件
 	dbops.InitDB()      // 初始化gorm db
 	dbops.InitRedis()   //初始化redis
+	oss.InitOss()       //初始化Oss
 
 	r := gin.Default()
 

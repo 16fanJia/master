@@ -1,4 +1,4 @@
-package dto
+package allParams
 
 // LoginParam 用户登录参数
 type LoginParam struct {

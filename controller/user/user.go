@@ -5,10 +5,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
+	"stream-video/allParams"
 	"stream-video/code"
 	"stream-video/common"
 	"stream-video/dbops"
-	"stream-video/dto"
 	"stream-video/model"
 	"stream-video/response"
 	"stream-video/util"
@@ -17,7 +17,7 @@ import (
 // RegisterUser 用户注册逻辑函数
 func RegisterUser(c *gin.Context) {
 	//获取参数
-	var params dto.RegisterParam
+	var params allParams.RegisterParam
 	if err := c.ShouldBind(&params); err != nil {
 		response.New(code.InvalidParam).WithError(err).Return(c)
 		return
@@ -72,7 +72,7 @@ func RegisterUser(c *gin.Context) {
 // LoginUser 用户登陆
 func LoginUser(c *gin.Context) {
 	//参数绑定
-	var params dto.LoginParam
+	var params allParams.LoginParam
 	if err := c.ShouldBind(&params); err != nil {
 		response.New(code.InvalidParam).WithError(err).Return(c)
 		return

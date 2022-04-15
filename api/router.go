@@ -7,7 +7,8 @@ import (
 func RegisterApi(r *gin.Engine) {
 	v1 := r.Group("/api/v1")
 	{
-		GetUserRouter(v1) //获取用户路由
+		RegisterUserRouter(v1)  //注册用户路由
+		RegisterVideoRouter(v1) //注册video路由
 	}
 
 }
