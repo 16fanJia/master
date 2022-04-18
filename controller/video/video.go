@@ -1,11 +1,16 @@
 package video
 
 import (
+	"context"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
 	"path/filepath"
+	"strconv"
 	"stream-video/allParams"
 	"stream-video/code"
+	"stream-video/controller/like"
 	"stream-video/dbops"
+	"stream-video/model"
 	"stream-video/oss"
 	"stream-video/response"
 	"stream-video/util"
@@ -51,16 +56,32 @@ func UploadVideo(c *gin.Context) {
 	}
 
 	//数据入库
-	videoData := make(map[string]interface{})
-	videoData["user_id"] = params.UserId
-	videoData["user_name"] = params.UserName
-	videoData["title"] = params.Title
-	videoData["dsc"] = params.Dsc
+	videoData := model.Video{
+		UserId:   params.UserId,
+		UserName: params.UserName,
+		Title:    params.Title,
+		Desc:     params.Dsc,
+		Clicks:   0,
+	}
 
 	if err := dbops.DB.Table("video").Create(&videoData).Error; err != nil {
 		util.Log.Error("数据入库失败：err:" + err.Error())
 		response.New(code.DataCreateError).WithError(err).Return(c)
 		return
+	}
+
+	ctx := context.Background()
+	//在redis中添加video数据
+	{
+		_, err := dbops.RDB.ZAdd(ctx, like.KeyLikeNumberZSet, &redis.Z{
+			Score:  0,
+			Member: strconv.Itoa(int(videoData.ID)),
+		}).Result()
+		if err != nil {
+			util.Log.Error("添加数据到redis 失败 err: " + err.Error())
+			response.New(code.DataCreateError).WithError(err).Return(c)
+			return
+		}
 	}
 
 	response.New(code.Ok).Return(c)

@@ -26,6 +26,9 @@ const (
 	FileUploadError            Code = 4018
 	DataCreateError            Code = 4019
 	DataDoesNotExist           Code = 4020
+	UserIdNotExist             Code = 4021
+	ErrAlreadyLike             Code = 4022
+	LikeError                  Code = 4023
 )
 
 var codeMsg = map[Code]string{
@@ -51,6 +54,9 @@ var codeMsg = map[Code]string{
 	FileUploadError:            "文件上传失败",
 	DataCreateError:            "数据创建入库失败",
 	DataDoesNotExist:           "数据不存在",
+	UserIdNotExist:             "用户ID不存在",
+	ErrAlreadyLike:             "重复点赞",
+	LikeError:                  "点赞失败",
 }
 
 func (c Code) GetMessage() string {
