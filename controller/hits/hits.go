@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	UserHits = "hits" //redis 视频用户点击量 key
+	UserHits = "hits:" //redis 视频用户点击量 key
 )
 
 func AddVideoHitsInfo(videoId int) error {
