@@ -29,6 +29,7 @@ const (
 	UserIdNotExist             Code = 4021
 	ErrAlreadyLike             Code = 4022
 	LikeError                  Code = 4023
+	RedisError                 Code = 4024
 )
 
 var codeMsg = map[Code]string{
@@ -57,6 +58,7 @@ var codeMsg = map[Code]string{
 	UserIdNotExist:             "用户ID不存在",
 	ErrAlreadyLike:             "重复点赞",
 	LikeError:                  "点赞失败",
+	RedisError:                 "redis 错误",
 }
 
 func (c Code) GetMessage() string {

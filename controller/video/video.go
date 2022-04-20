@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"stream-video/allParams"
 	"stream-video/code"
+	"stream-video/controller/hits"
 	"stream-video/controller/like"
 	"stream-video/dbops"
 	"stream-video/model"
@@ -70,10 +71,9 @@ func UploadVideo(c *gin.Context) {
 		return
 	}
 
-	ctx := context.Background()
-	//在redis中添加video数据
+	//在redis中添加video 点赞数据
 	{
-		_, err := dbops.RDB.ZAdd(ctx, like.KeyLikeNumberZSet, &redis.Z{
+		_, err := dbops.RDB.ZAdd(context.Background(), like.KeyLikeNumberZSet, &redis.Z{
 			Score:  0,
 			Member: strconv.Itoa(int(videoData.ID)),
 		}).Result()
@@ -83,6 +83,25 @@ func UploadVideo(c *gin.Context) {
 			return
 		}
 	}
+	//在redis中添加video 观看量--点击量
+	{
+		_, err := dbops.RDB.ZAdd(context.Background(), hits.UserHits, &redis.Z{
+			Score:  0,
+			Member: strconv.Itoa(int(videoData.ID)),
+		}).Result()
+		if err != nil {
+			util.Log.Error("添加数据到redis 失败 err: " + err.Error())
+			response.New(code.DataCreateError).WithError(err).Return(c)
+			return
+		}
+	}
+	c.Set("videoId", int(videoData.ID))
 
 	response.New(code.Ok).Return(c)
+}
+
+// GetVideo 获取视频详情 --即观看视频
+func GetVideo(c *gin.Context) {
+	c.Param("id")
+
 }
