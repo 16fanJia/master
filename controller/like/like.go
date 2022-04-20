@@ -1,9 +1,14 @@
 package like
 
 import (
+	"context"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis/v8"
+	"strconv"
 	"stream-video/allParams"
 	"stream-video/code"
+	"stream-video/dbops"
 	"stream-video/response"
 	"stream-video/util"
 )
@@ -41,4 +46,16 @@ func VideoLike(c *gin.Context) {
 	}
 
 	response.New(code.Ok).Return(c)
+}
+
+func AddVideoLikeInfo(videoId int) error {
+	_, err := dbops.RDB.ZAdd(context.Background(), KeyLikeNumberZSet, &redis.Z{
+		Score:  0,
+		Member: strconv.Itoa(videoId),
+	}).Result()
+	if err != nil {
+		util.Log.Error("添加点赞数据到redis 失败 err: " + err.Error())
+		return fmt.Errorf("like_redis err: %s", err)
+	}
+	return nil
 }

@@ -1,11 +1,8 @@
 package video
 
 import (
-	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/go-redis/redis/v8"
 	"path/filepath"
-	"strconv"
 	"stream-video/allParams"
 	"stream-video/code"
 	"stream-video/controller/hits"
@@ -72,28 +69,15 @@ func UploadVideo(c *gin.Context) {
 	}
 
 	//在redis中添加video 点赞数据
-	{
-		_, err := dbops.RDB.ZAdd(context.Background(), like.KeyLikeNumberZSet, &redis.Z{
-			Score:  0,
-			Member: strconv.Itoa(int(videoData.ID)),
-		}).Result()
-		if err != nil {
-			util.Log.Error("添加数据到redis 失败 err: " + err.Error())
-			response.New(code.DataCreateError).WithError(err).Return(c)
-			return
-		}
+	if err := like.AddVideoLikeInfo(int(videoData.ID)); err != nil {
+		response.New(code.RedisError).WithError(err).Return(c)
+		return
 	}
+
 	//在redis中添加video 观看量--点击量
-	{
-		_, err := dbops.RDB.ZAdd(context.Background(), hits.UserHits, &redis.Z{
-			Score:  0,
-			Member: strconv.Itoa(int(videoData.ID)),
-		}).Result()
-		if err != nil {
-			util.Log.Error("添加数据到redis 失败 err: " + err.Error())
-			response.New(code.DataCreateError).WithError(err).Return(c)
-			return
-		}
+	if err := hits.AddVideoHitsInfo(int(videoData.ID)); err != nil {
+		response.New(code.RedisError).WithError(err).Return(c)
+		return
 	}
 	c.Set("videoId", int(videoData.ID))
 
